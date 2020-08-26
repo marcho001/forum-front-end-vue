@@ -34,7 +34,7 @@ Vue.use(VueRouter)
   {
     path: '/restaurants/top',
     name: 'restaurants-tops',
-    component: () => import('../views/RestaurantsFeeds')
+    component: () => import('../views/RestaurantsTop')
   },
   {
     path: '/users/top',
@@ -49,6 +49,7 @@ Vue.use(VueRouter)
 ]
 
 const router = new VueRouter({
+  linkExactActiveClass: 'active',
   routes
 })
 
