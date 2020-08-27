@@ -3,13 +3,14 @@
     <h1>餐廳描述頁</h1>
     <RestaurantDetail :init-restaurant="restaurant"/>
     <hr>
-    <!-- 餐廳評論 RestaurantComments -->
+    <RestaurantComments :comments="restaurantComments"/>
     <!-- 新增評論 CreateComment -->
   </div>
 </template>
 
 <script>
 import RestaurantDetail from '../components/RestaurantDetail'
+import RestaurantComments from '../components/RestaurantComments'
 const dummyData = {
   "restaurant": {
         "id": 1,
@@ -56,7 +57,8 @@ const dummyData = {
 }
 export default {
   components: {
-    RestaurantDetail
+    RestaurantDetail,
+    RestaurantComments
   },
   data(){
     return {
