@@ -2,18 +2,25 @@
   <div class="container py-5">
     <NavTabs />
     <div class="row">
+      <RestaurantNavPills :categories="categories" />
       <RestaurantCard 
         v-for="restaurant in restaurants" 
         :key="restaurant.id"
         :initial-restaurant="restaurant"/>
     </div>   
-    <!--RestaurantPagination/-->
+    <RestaurantPagination
+      v-if="totalPage"
+      :category-id="categoryId"
+      :current-page="currentPage"
+      :total-page="totalPage"/>
   </div>
 </template>
 
 <script>
 import NavTabs from '../components/NavTab'
 import RestaurantCard from '../components/RestaurantCard'
+import RestaurantNavPills from '../components/RestaurantsNavPill'
+import RestaurantPagination from '../components/RestaurantsPagination'
 
 const dummyData = {
   "restaurants": [
@@ -293,7 +300,9 @@ const dummyData = {
 export default {
   components:{
     NavTabs,
-    RestaurantCard
+    RestaurantCard,
+    RestaurantNavPills,
+    RestaurantPagination
   },
   data(){
     return {
