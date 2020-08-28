@@ -42,6 +42,11 @@ Vue.use(VueRouter)
     component: () => import('../views/Restaurant')
   },
   {
+    path: '/restaurants/:id/dashboard',
+    name: 'restaurantDashboard',
+    component: () => import('../views/RestaurantDashboard')
+  },
+  {
     path: '/users/top',
     name: 'users-top',
     component: () => import('../views/UsersTop')
