@@ -1,16 +1,20 @@
 <template>
   <div class="container py-5">
-    <h1>餐廳描述頁</h1>
     <RestaurantDetail :init-restaurant="restaurant"/>
     <hr>
-    <RestaurantComments :comments="restaurantComments"/>
-    <!-- 新增評論 CreateComment -->
+    <RestaurantComments 
+      :comments="restaurantComments"
+      @after-delete-comment="afterDeleteComment"/>
+    <CreateComment 
+      :restaurantId="restaurant.id"
+      @after-create-comment="afterCreateComment"/>
   </div>
 </template>
 
 <script>
 import RestaurantDetail from '../components/RestaurantDetail'
 import RestaurantComments from '../components/RestaurantComments'
+import CreateComment from '../components/comment/CreateComment'
 const dummyData = {
   "restaurant": {
         "id": 1,
@@ -55,10 +59,21 @@ const dummyData = {
   "isFavorited": false,
   "isLiked": false
 }
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
 export default {
   components: {
     RestaurantDetail,
-    RestaurantComments
+    RestaurantComments,
+    CreateComment
   },
   data(){
     return {
@@ -74,6 +89,7 @@ export default {
         isFavorited: false,
         isLiked: false
       },
+      currentUser: dummyUser.currentUser,
       restaurantComments: []
     }
   },
@@ -95,6 +111,24 @@ export default {
       }
 
       this.restaurantComments = restaurant.Comments
+    },
+    afterDeleteComment(commentId){
+      this.restaurantComments = this.restaurantComments.filter(
+        comment => comment.id !== commentId
+        )
+    },
+    afterCreateComment(payload){
+      const { commentId, restaurantId, text } = payload
+      this.restaurantComments.push({
+        id: commentId,
+        RestaurantId: restaurantId,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name
+        },
+        text,
+        createdAt: new Date()
+      })
     }
   },
   created(){

@@ -9,7 +9,8 @@
       :key="comment.id">
       <blockquote class="blockquote mb-0">
         <button
-        v-if="currentUser.isAdmin"
+          v-if="currentUser.isAdmin"
+          @click.stop.prevent="handleDeleteButtonClick(comment.id)"
           type="button"
           class="btn btn-danger float-right"
         >
@@ -53,9 +54,14 @@ export default {
   },
   data(){
     return {
-      currentUser: dummyUser.currentUser
+      currentUser: dummyUser.currentUser,
     }
   },
-  mixins: [fromNowFilter]
+  mixins: [fromNowFilter],
+  methods: {
+    handleDeleteButtonClick(commentId){
+      this.$emit('after-delete-comment', commentId)
+    }
+  }
 }
 </script>

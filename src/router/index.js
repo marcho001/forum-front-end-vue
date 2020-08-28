@@ -38,7 +38,7 @@ Vue.use(VueRouter)
   },
   {
     path: '/restaurants/:id',
-    name: 'restaurants',
+    name: 'restaurant',
     component: () => import('../views/Restaurant')
   },
   {

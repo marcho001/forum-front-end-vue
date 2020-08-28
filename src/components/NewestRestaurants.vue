@@ -8,7 +8,10 @@
         v-for="restaurant in restaurants"
         :key="restaurant.id">
         <h4>
-          <a href="#">{{ restaurant.name }}</a>
+          <router-link 
+            :to="{ name: 'restaurant', params: { id: restaurant.id }}">
+              {{ restaurant.name }}
+          </router-link>
           <small>{{ restaurant.Category ? restaurant.Category.name : ''}}</small>
         </h4>
         <p>{{ restaurant.description }}</p>
