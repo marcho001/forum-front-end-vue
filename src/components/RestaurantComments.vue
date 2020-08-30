@@ -17,9 +17,10 @@
           Delete
         </button>
         <h3>
-          <a href="#">
+          <router-link 
+            :to="{ name: 'users-profile', params: { id: comment.UserId }}">
             {{ comment.User.name }}
-          </a>
+          </router-link>
         </h3>
         <p>
           {{ comment.text }}

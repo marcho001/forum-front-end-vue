@@ -52,6 +52,11 @@ Vue.use(VueRouter)
     component: () => import('../views/UsersTop')
   },
   {
+    path: '/users/:id',
+    name: 'users-profile',
+    component: () => import('../views/User')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
