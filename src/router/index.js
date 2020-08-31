@@ -69,7 +69,7 @@ Vue.use(VueRouter)
   {
     path: '/admin/restaurants/:id',
     name: 'admin-restaurant',
-    component: () => import('./views/AdminRestaurant.vue')
+    component: () => import('../views/AdminRestaurant.vue')
   },
   {
     path: '*',

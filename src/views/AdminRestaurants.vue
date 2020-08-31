@@ -15,7 +15,7 @@
 
 <script>
 import AdminNav from '../components/AdminNav'
-import AdminRestaurantsTable from '../components/AdminRest/AdminRestaurants'
+import AdminRestaurantsTable from '../components/AdminRest/AdminRestaurantsTable'
 export default {
   components: {
     AdminNav,
