@@ -3,7 +3,7 @@
     <AdminNav />
 
     <router-link
-      :to="{ name: 'admin-restaurant-new'}"
+      to="/admin/restaurants/new"
       class="btn btn-primary mb-4"
     >
       New Restaurant

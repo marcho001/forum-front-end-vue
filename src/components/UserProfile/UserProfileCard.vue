@@ -33,10 +33,10 @@
         following (追蹤者)
       </div>
 
-      <a
+      <router-link
         v-if="profile.id === currentUser.id" 
-        href="/users/31/edit" class="btn btn-primary mt-1">EDIT
-      </a>
+        :to="{name: 'users-edit', params: { id: profile.id }}" class="btn btn-primary mt-1">EDIT
+      </router-link>
       <p 
        v-else
        class="mt-3">
@@ -64,7 +64,7 @@
 <script>
 const dummyUser = {
   currentUser: {
-    id: 2,
+    id: 1,
     name: '管理者',
     email: 'root@example.com',
     image: 'https://i.pravatar.cc/300',

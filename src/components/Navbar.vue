@@ -11,7 +11,7 @@
       <!-- is user is admin -->
       <router-link 
         v-if="currentUser.isAdmin" 
-        :to="{ name: 'admin-restaurants'}" class="text-white mr-3">管理員後台</router-link>
+        to="/admin" class="text-white mr-3">管理員後台</router-link>
 
       <!-- is user is login -->
       <template v-if="isAuthenticated">
