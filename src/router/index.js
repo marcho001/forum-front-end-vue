@@ -5,7 +5,7 @@ import SignIn from '../views/SignIn'
 import Restaurants from '../views/Restaurants'
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'root',

@@ -88,18 +88,16 @@ export default {
           email: this.email,
           password: this.password
         })
-        const { data, status } = res
-
-        if ( status !== 'success') throw new Error(data.message)
+        const { data } = res
 
         localStorage.setItem('token', data.token)
         this.$router.push('/restaurants')
 
       } catch (err) {
-
+        console.log(err)
         this.isProcessing = false
         this.password = ''
-        
+
         Toast.fire({
           icon: 'warning',
           title: '請確認您輸入正確的帳密'
