@@ -6,5 +6,9 @@ export default {
       email,
       password
     })
+  },
+  signup (formData) {
+    console.log(formData)
+    return apiHelper.post('/signup', formData)
   }
 }

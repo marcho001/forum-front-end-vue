@@ -22,14 +22,14 @@
             <p class="card-text">
               {{ restaurant.description }}
             </p>
-            <a
-              href="#"
+            <router-link
+              :to="{ name: 'restaurant', params: { id: restaurant.id }}"
               class="btn btn-primary mr-2"
-            >Show</a>
+            >Show</router-link>
 
             <button
               v-if="restaurant.isFavorited"
-              @click.stop.prevent="removeFavorite"
+              @click.stop.prevent="removeFavorite(restaurant.id)"
               type="button"
               class="btn btn-danger mr-2"
             >
@@ -37,7 +37,7 @@
             </button>
             <button
               v-else
-              @click.stop.prevent="addFavorite"
+              @click.stop.prevent="addFavorite(restaurant.id)"
               type="button"
               class="btn btn-primary"
             >
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import usersAPI from '../apis/users'
+import { Toast } from '../utils/helpers'
 export default {
   props: {
     initRestaurant: {
@@ -63,16 +65,36 @@ export default {
     }
   },
   methods: {
-    addFavorite(){
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: true
+    async addFavorite(restaurantId){
+      try {
+        const { data } = await usersAPI.addFavorite({ restaurantId })
+        if (data.status !== "success") throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: true
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網路異常，請稍後再試'
+        })
       }
     },
-    removeFavorite(){
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: false
+    async removeFavorite(restaurantId){
+      try {
+        const { data } = await usersAPI.removeFavorite({ restaurantId })
+        if (data.status !== 'success') throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: false
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網路異常，請稍後再試'
+        })
       }
     }
   }

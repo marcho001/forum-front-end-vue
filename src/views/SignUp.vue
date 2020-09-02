@@ -47,7 +47,8 @@
 </template>
 
 <script>
-// import authorizationAPI from '../apis/authorization'
+import authorizationAPI from '../apis/authorization'
+import { Toast } from '../utils/helpers'
 export default {
   data() {
     return {
@@ -58,15 +59,37 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck
-      })
-
-      console.log(data)
+    async handleSubmit() {
+      try {
+        if (!this.name || !this.email || !this.password || !this.passwordCheck) {
+          Toast.fire({
+            icon: 'error',
+            title: '所有欄位都要填喔'
+          })
+          return
+        } else if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            icon: 'error',
+            title: '密碼與確認密碼不符合'
+          })
+          return
+        }
+        const formData = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck
+        }
+        const { data }  = await authorizationAPI.signup(formData)
+        if (data.status !== 'success') throw new Error()
+        this.$router.push('/signin')
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網路異常，請稍後再試'
+        })
+      }
     }
   }
 }

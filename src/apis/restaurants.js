@@ -11,5 +11,10 @@ export default {
   },
   getRestaurantsFeeds () {
     return apiHelper.get('/restaurants/feeds', { headers: { Authorization: `Bearer ${getToken()}` } })
+  },
+  getRestaurantsTop () {
+    return apiHelper.get('/restaurants/top', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
