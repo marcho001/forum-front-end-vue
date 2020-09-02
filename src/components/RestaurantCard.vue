@@ -3,7 +3,7 @@
     <div class="card mb-4">
       <img
         class="card-img-top"
-        :src="restaurant.image"
+        :src="restaurant.image | emptyImage"
         alt="Card image cap"
         width="286px"
         height="180px"
@@ -26,7 +26,7 @@
       <div class="card-footer">
         <button
           v-if="restaurant.isFavorited"
-          @click.stop.prevent="removeFavorite"
+          @click.stop.prevent="removeFavorite(restaurant.id)"
           type="button"
           class="btn btn-danger btn-border favorite mr-2"
         >
@@ -34,7 +34,7 @@
         </button>
         <button
           v-else
-          @click.stop.prevent="addFavorite"
+          @click.stop.prevent="addFavorite(restaurant.id)"
           type="button"
           class="btn btn-primary btn-border favorite mr-2"
         >
@@ -42,7 +42,7 @@
         </button>
         <button
           v-if="restaurant.isLiked"
-          @click.stop.prevent="removeLike"
+          @click.stop.prevent="removeLike(restaurant.id)"
           type="button"
           class="btn btn-danger like mr-2"
         >
@@ -50,7 +50,7 @@
         </button>
         <button
           v-else
-          @click.stop.prevent="addLike"
+          @click.stop.prevent="addLike(restaurant.id)"
           type="button"
           class="btn btn-primary like mr-2"
         >
@@ -62,6 +62,9 @@
 </template>
 
 <script>
+import { emptyImageFilter } from '../utils/mixins'
+import usersAPI from '../apis/users'
+import { Toast } from '../utils/helpers'
 export default {
   props: {
     initialRestaurant: {
@@ -75,30 +78,73 @@ export default {
     }
   },
   methods: {
-    addFavorite(){
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: true
+    async addFavorite (restaurantId) {
+      try {
+        const { data } = await usersAPI.addFavorite({ restaurantId })
+        if (data.status !== 'success') throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: true
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網頁異常，請稍後再試'
+        })
       }
     },
-    removeFavorite(){
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: false
+    async removeFavorite (restaurantId) {
+      try {
+        const { data } = await usersAPI.removeFavorite({ restaurantId })
+        if (data.status !== 'success') throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: false
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網頁異常，請稍後再試'
+        })
       }
     },
-    addLike(){
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: true,
+    async addLike (restaurantId) {
+      try {
+        const { data } = await usersAPI.addLike({ restaurantId })
+        console.log(data)
+        if (data.status !== 'success') throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: true,
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網路異常，請稍後再試'
+        })
       }
     },
-    removeLike(){
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: false
+    async removeLike (restaurantId) {
+      try {
+        const { data } = await usersAPI.removeLike(restaurantId)
+        console.log(data)
+        if (data.status !== 'success') throw new Error()
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: false
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '網路異常，請稍後再試'
+        })
       }
     }
-  }
+  },
+  mixins: [emptyImageFilter]
 }
 </script>

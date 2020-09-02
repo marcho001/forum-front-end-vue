@@ -2,17 +2,17 @@
       <div class="col-3 mx-2">
         <a href="#">
           <img
-            :src="topUser.image"
+            :src="topUser.image | emptyImage"
             width="140px"
             height="140px"
           >
         </a>
         <h2>{{topUser.name}}</h2>
-        <span class="badge badge-secondary">追蹤人數：{{topUser.FollowerCount}}</span>
+        <span class="badge badge-secondary">追蹤人數：{{topUser.followerCount}}</span>
         <p class="mt-3">
           <button
             v-if="topUser.isFollowed"
-            @click="removeFollowed"
+            @click="removeFollowed(topUser.id)"
             type="button"
             class="btn btn-danger"
           >
@@ -20,7 +20,7 @@
           </button>
           <button
             v-else
-            @click="addFollowed"
+            @click="addFollowed(topUser.id)"
             type="button"
             class="btn btn-primary"
           >
@@ -31,6 +31,9 @@
 </template>
 
 <script>
+import { emptyImageFilter } from '../utils/mixins'
+import usersAPI from '../apis/users'
+import { Toast } from '../utils/helpers'
 export default {
   props: {
     initUsers: {
@@ -44,18 +47,39 @@ export default {
     }
   },
   methods: {
-    addFollowed(){
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: true
+    async addFollowed(userId){
+      try {
+        const { data } = await usersAPI.addFollow(userId)
+        if (data.status !== 'success') throw new Error()
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: true
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: "網路異常，請稍後再試"
+        })
       }
     },
-    removeFollowed(){
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: false
+    async removeFollowed(userId){
+      try {
+        const { data } = await usersAPI.removeFollow(userId)
+        if (data.status !== 'success') throw new Error()
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: false
+        }
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: "網路異常，請稍後再試"
+        })
       }
     }
-  }
+  },
+  mixins: [emptyImageFilter]
 }
 </script>
