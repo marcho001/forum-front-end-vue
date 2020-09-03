@@ -17,7 +17,8 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click.stop.prevent="createCategory"
+            :disabled="isProcessing"
+            @click.stop.prevent="createCategory(newCategoryName)"
           >
             新增
           </button>
@@ -105,36 +106,9 @@
 
 <script>
 import AdminNav from '@/components/AdminNav'
-import uuid from 'uuid/dist/v4'
+import adminAPI from '../apis/admin'
+import { Toast } from '../utils/helpers'
 //  2. 定義暫時使用的資料
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 2,
-      name: '日本料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 4,
-      name: '墨西哥料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    }
-  ]
-}
 
 export default {
   components: {
@@ -144,7 +118,8 @@ export default {
   data () {
     return {
       newCategoryName: '',
-      categories: []
+      categories: [],
+      isProcessing: false
     }
   },
   // 5. 調用 `fetchCategories` 方法
@@ -153,23 +128,57 @@ export default {
   },
   methods: {
     // 4. 定義 `fetchCategories` 方法，把 `dummyData` 帶入 Vue 物件
-    fetchCategories () {
-      this.categories = 
-        dummyData.categories.map(category =>({
-          ...category,
+    async fetchCategories () {
+      try {
+        const { data } = await adminAPI.categories.get()
+        this.categories = 
+          data.categories.map(category =>({
+            ...category,
+            isEditing: false,
+            nameCached: ''
+          }))
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得餐廳類別，請稍後再試'
+        })
+      }
+    },
+    async createCategory(name) {
+      try {
+        this.isProcessing = true
+        const { data } = await adminAPI.categories.post({ name })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.categories.push({
+          id: data.categoryId,
           isEditing: false,
-          nameCached: ''
-        }))
+          name,
+          nameCached: ""
+        })
+        this.newCategoryName = ''
+        this.isProcessing = false
+      } catch (err) {
+        this.isProcessing = false
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增類別，請稍後再試'
+        })
+      }
     },
-    createCategory(name) {
-      console.log(name)
-      this.categories.push({
-        id: uuid(),
-        name: this.newCategoryName
-      })
-      this.newCategoryName = ''
-    },
-    deleteCategory(id){
+    async deleteCategory(id){
+      try {
+        const { data } = await adminAPI.categories.delete(id)
+        if (data.status !== 'success') throw new Error(data.message)
+        this.categories = this.categories.filter(category => category.id !== id)
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '無法刪除類別，請稍後再試'
+        })
+      }
       this.categories = this.categories.filter(category => category.id !== id)
     },
     toggleIsEditing(id){
@@ -184,9 +193,19 @@ export default {
         return category
       })
     },
-    updateCategory({ categoryId, name }){
-      console.log(name)
-      this.toggleIsEditing(categoryId)
+    async updateCategory({ categoryId, name }){
+      try {
+        const { data } = await adminAPI.categories.update(categoryId, { name })
+        console.log(data)
+        if (data.status !== 'success') throw new Error(data.message)
+        this.toggleIsEditing(categoryId)
+      } catch (err) {
+        console.log(err)
+        Toast.fire({
+          icon: 'error',
+          title: '無法更新餐廳，請稍後再試'
+        })
+      }
     },
     handleCancel(id) {
       this.categories = this.categories.map(category => {
@@ -200,7 +219,8 @@ export default {
       })
       this.toggleIsEditing(id)
     }
-  }
+  },
+  
 }
 </script>
 
