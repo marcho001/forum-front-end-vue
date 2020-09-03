@@ -70,7 +70,7 @@ export default {
   methods: {
     async fetchRestaurant (restaurantId) {
       try {
-        const { data } = await adminAPI.restaurants.getDetail({ restaurantId })
+        const { data } = await adminAPI.restaurants.getDetail(restaurantId)
         if (data.restaurant === null) {
           Toast.fire({
             icon: 'error',
